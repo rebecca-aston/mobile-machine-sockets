@@ -29,7 +29,6 @@ function setup() {
   angleMode(DEGREES);
   //text styling
   textSize(16);
-  textAlign(CENTER);
   textWrap(WORD);
 
   // simplified DESKTOP vs. MOBILE DETECTION
@@ -68,7 +67,7 @@ function draw() {
     return;// exit draw cycle early
   }
 
-  // MOBILE DEVICE VISUALISATION
+  // --------  MY MOBILE DEVICE --------
 
   //debug / show my own data
   visualiseMyData();
@@ -76,7 +75,12 @@ function draw() {
   // Send my data to the server (throttle via frameRate if needed)
   emitData();
 
+
 }
+
+// --------------------
+// Custom Functions
+// --------------------
 
 
 function visualiseMyData(){
@@ -111,7 +115,7 @@ function visualiseMyData(){
 
   // Debug text
   fill(0);
-  textSize(14);
+  textAlign(LEFT);
 
   text("Acceleration:", 10, 60);
   text(
@@ -153,19 +157,21 @@ function emitData(){
       beta: frontToBack,
       gamma: leftToRight,
     },
-    timestamp: Date.now(),
+    timestamp: Date.now()
   });
 }
 
 //not mobile message
 function displayDesktopMessage() {
   fill(0);
+  textAlign(CENTER);
   let message = "This is a mobile experience. Please open this URL on your phone’s browser.";
   text(message, width / 2, height / 2, width);//4th parameter to get text to wrap to new line if wider than canvas
 }
 
 function displayPermissionMessage() {
   fill(0);
+  textAlign(CENTER);
   let message = "Waiting for motion sensor permission, click the button to allow.";
   text(message, width / 2, height / 2, width);//4th parameter to get text to wrap to new line if wider than canvas
 }
@@ -181,9 +187,11 @@ socket.on("connect", () => {
 
 socket.on("motionData", (data) => {
   console.log("Remote device data:", data);
-  // Here is where another client could visualise / react
-});
 
+  // Here is where another browser could visualise / react to data being sent
+
+
+});
 
 // --------------------
 // Permission handling
@@ -220,6 +228,17 @@ function handlePermissionButtonPressed() {
   askButton.remove();
 }
 
+// --------------------
+// Window Resize
+// --------------------
+
+
+function windowResized() {
+
+  resizeCanvas(windowWidth, windowHeight);
+
+}
+
 
 // --------------------
 // Sensor handlers
@@ -244,6 +263,12 @@ function deviceOrientationHandler(event) {
   frontToBack = event.beta || 0;
   leftToRight = event.gamma || 0;
 }
+
+
+// --------------------
+// Mobile Device Check
+// --------------------
+
 
 // Simple mobile device check using the browser's userAgent string
 // This is fast and easy, but not 100% reliable for all devices
@@ -271,10 +296,3 @@ function checkMobileDevice() {
     whether the device is a phone, tablet, or desktop with much
     higher accuracy than a simple regex.
 */
-
-
-function windowResized() {
-
-  resizeCanvas(windowWidth, windowHeight);
-
-}
