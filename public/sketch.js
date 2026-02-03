@@ -81,9 +81,7 @@ function draw() {
 
       // draw all users including myself
       for (let id in experienceState.users) {
-        const u = experienceState.users[id];
-
-        drawOthers(u);
+        drawOthers(id);
       }
 
       // MY MOBILE DEVICE
@@ -102,15 +100,19 @@ function draw() {
 // --------------------
 
 //visualise other drawing
-function drawOthers(data){
-  let rectHeight = map(data.orientation.beta, -90,90,0,height);//front to back is beta
-  console.log(rectHeight,data.orientation.beta);
+function drawOthers(id){
+  let u = experienceState.users[id];
+  console.log(u);
+
+  let rectHeight = map(u.orientation.beta, -90,90,0,height);//front to back is beta
+  console.log(rectHeight,u.orientation.beta);
   fill(0,0,255);
   push();
   rectMode(CORNER);
   noStroke();
-  rect(data.screenPosition.x,0,40,rectHeight);
+  rect(u.screenPosition.x,0,40,rectHeight);
   pop();
+
 }
 
 
@@ -246,7 +248,7 @@ socket.on("userLeft", (id) => {
 
 // someone moved
 socket.on("userMoved", (data) => {
-  console.log(data);
+  // console.log(data);
   let id = data.id;
   if (experienceState.users[id]) {
     experienceState.users[id] = data.motion
