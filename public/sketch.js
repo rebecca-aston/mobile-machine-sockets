@@ -7,7 +7,9 @@ let randomX;
 let randomY;
 
 let me; // for storing my socket.id
-let experienceState; //will just declare here as it's a big javascript object
+let experienceState = {
+  users: {}            // socket.id -> movement data
+};
 
 // Permission button (iOS)
 let askButton;
@@ -79,21 +81,22 @@ function draw() {
       displayPermissionMessage();
     }else{
 
-      console.log(experienceState.users);
-      // draw all users including myself
-      for (let id in experienceState.users) {
-        //if I'm a moving device not a PC / laptop
-        if(experienceState.users[id].deviceMoves){
-          drawOthers(id);
-        }
-      }
-
       // MY MOBILE DEVICE
       //debug / show my own data
       visualiseMyData();
 
       // Send my data to the server (throttle via frameRate if needed)
       emitData();
+    }
+  }
+
+  //draw movers for everyone
+  console.log(experienceState.users);
+  // draw all users including myself
+  for (let id in experienceState.users) {
+    //if I'm a moving device not a PC / laptop
+    if(experienceState.users[id].deviceMoves){
+      drawOthers(id);
     }
   }
 
@@ -252,9 +255,10 @@ socket.on("userLeft", (id) => {
 
 // someone moved
 socket.on("userMoved", (data) => {
-  // console.log(data);
   let id = data.id;
+  console.log(data.id,experienceState.users[id]);
   if (experienceState.users[id]) {
+    console.log(data);
     experienceState.users[id].deviceMoves = data.deviceMoves;
     experienceState.users[id].motionData = data.motion;
   }
