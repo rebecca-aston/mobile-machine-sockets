@@ -195,7 +195,7 @@ function emitData(){
   } 
   lastSent = now;
 
-  socket.emit("motionData", {
+  let myMotionData = {
     screenPosition: { 
       x: randomX,
       y: randomY
@@ -215,7 +215,12 @@ function emitData(){
       beta: frontToBack,
       gamma: leftToRight,
     }
-  });
+  };
+
+  experienceState.users[me].deviceMoves = true;
+  experienceState.users[me].motionData = myMotionData;
+
+  socket.emit("motionData", myMotionData);
 }
 
 //not mobile message
@@ -257,9 +262,9 @@ socket.on("userLeft", (id) => {
 // someone moved
 socket.on("userMoved", (data) => {
   let id = data.id;
-  console.log(data.id,experienceState.users[id]);
+  // console.log(data.id,experienceState.users[id]);
   if (experienceState.users[id]) {
-    console.log(data);
+    // console.log(data);
     experienceState.users[id].deviceMoves = data.deviceMoves;
     experienceState.users[id].motionData = data.motion;
   }
